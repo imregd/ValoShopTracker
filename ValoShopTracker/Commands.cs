@@ -1,45 +1,20 @@
-using Discord;
-using Discord.Net;
+using Discord.Interactions;
 using Discord.WebSocket;
-using Newtonsoft.Json;
 
 namespace ValoShopTracker;
 
-public class Commands
+public class Commands : InteractionModuleBase<SocketInteractionContext>
 {
 
-    public static async Task ClientOnReady(DiscordSocketClient _client)
+    [SlashCommand("frst-guild-cmd", "ts better work yoyo")]
+    public async Task FrstGuildCmd()
     {
-        
-        var config = JsonConvert.DeserializeObject<DiscToken>(File.ReadAllText("appsettings.json"));
-
-        
-        Console.WriteLine(config.GuildId);
-        var gCommand = new SlashCommandBuilder();
-        gCommand.WithName("first-cmd");
-        gCommand.WithDescription("ts better work yoyo");
-
-
-
-        var guildCommand = _client.GetGuild(config.GuildId);
-        var guiCommand = new SlashCommandBuilder();
-        guiCommand.WithName("frst-guild-cmd");
-        guiCommand.WithDescription("ts better work yoyo");
-        
-        
-        try
+        for (int i = 0; i < 100; i++)
         {
-            
-            await guildCommand.CreateApplicationCommandAsync(guiCommand.Build());
-            
-            await _client.CreateGlobalApplicationCommandAsync(gCommand.Build());
+            await Context.Channel.SendMessageAsync("https://klipy.com/gifs/homer-let-the-barts-out-2");
         }
-        catch(HttpException e)
-        {
-            var json = JsonConvert.SerializeObject(e.Errors, Formatting.Indented);
-            
-            
-            Console.WriteLine(json);
-        }
+        await RespondAsync($"hey {Context.User.Mention}, ur name is {Context.User.Username} and YOU just called frstgUILDCMD HAHAA also ur a friggin nerd yo");
+
     }
+    
 }
