@@ -13,11 +13,11 @@ public class CommandReg
         
         var config = JsonConvert.DeserializeObject<DiscToken>(File.ReadAllText("appsettings.json"));
 
-        
-        Console.WriteLine(config.GuildId);
-        var gCommand = new SlashCommandBuilder();
-        gCommand.WithName("first-cmd");
-        gCommand.WithDescription("ts better work yoyo");
+        // global not needed rn, will use when out of dev
+        // Console.WriteLine(config.GuildId);
+        // var gCommand = new SlashCommandBuilder();
+        // gCommand.WithName("first-cmd");
+        // gCommand.WithDescription("ts better work yoyo");
 
 
 
@@ -32,7 +32,7 @@ public class CommandReg
             
             await guildCommand.CreateApplicationCommandAsync(guiCommand.Build());
             
-            await _client.CreateGlobalApplicationCommandAsync(gCommand.Build());
+            // await _client.CreateGlobalApplicationCommandAsync(gCommand.Build());
         }
         catch(HttpException e)
         {
