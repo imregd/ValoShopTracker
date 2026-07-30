@@ -3,5 +3,6 @@
 public class DiscToken
 {
     public string Token { get; set; }
+    public ulong GuildId { get; set; }
 
 }

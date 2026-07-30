@@ -8,8 +8,17 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Discord.Net.Commands" Version="3.20.1" />
       <PackageReference Include="Discord.Net.Core" Version="3.20.1" />
+      <PackageReference Include="Discord.Net.Interactions" Version="3.20.1" />
       <PackageReference Include="Discord.Net.WebSocket" Version="3.20.1" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0-preview.6.26359.118" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>
