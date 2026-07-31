@@ -7,14 +7,14 @@ using Newtonsoft.Json;
 using ValoShopTracker;
 using Discord.Net;
 using Microsoft.Extensions.DependencyInjection;
+using ValoShopTracker.DB;
+using Microsoft.EntityFrameworkCore;
 
 
 public class Program
 {
 
 	private static DiscordSocketClient _client;
-
-
 
 	private static Task Log(LogMessage msg)
 	{
@@ -33,7 +33,11 @@ public class Program
 
 		var collection = new ServiceCollection()
 			.AddSingleton(_client)
-			.AddSingleton(interactionService);
+			.AddSingleton(interactionService)
+			.AddDbContext<DbConstructor>(options =>
+			{
+				options.UseSqlite("Data Source=ValoShopTracker.db");
+			});
 
 		var serviceProvider = collection.BuildServiceProvider();
 
