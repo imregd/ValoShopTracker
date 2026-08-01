@@ -40,9 +40,7 @@ public class Program
 			});
 
 		var serviceProvider = collection.BuildServiceProvider();
-
-		_client.Ready += async () => { CommandReg.ClientOnReady(_client); };
-
+		
 		_client.InteractionCreated += async (x) =>
 		{
 			var ctx = new SocketInteractionContext(_client, x);
@@ -53,6 +51,10 @@ public class Program
 				if (x is SocketSlashCommand cmd)
 				{
 					Console.WriteLine($"cmd called: {cmd.Data.Name} FAILED with {result.Error} - {result.ErrorReason}");
+				}
+				else
+				{
+					Console.WriteLine($"smth failed: ERR: {result.Error} - {result.ErrorReason}");
 				}
 			}
 			else
@@ -72,12 +74,28 @@ public class Program
 
 		_client.Ready += async () => { await interactionService.RegisterCommandsToGuildAsync(config.GuildId); };
 
+		
+		var mod = await interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), serviceProvider);
+
+		
+		foreach (var module in mod)
+		{
+			Console.WriteLine($"Module: {module.Name}");
+			foreach (var cmd in module.SlashCommands)
+				Console.WriteLine($"  Slash: {cmd.Name}");
+			foreach (var cmd in module.ComponentCommands)
+				Console.WriteLine($"  Component: {cmd.Name}");
+			foreach (var cmd in module.ModalCommands)
+				Console.WriteLine($"  Modal: {cmd.Name}");
+		}
+		
+		Console.WriteLine("mods found" + mod.Count());
+		
+		
 		await _client.LoginAsync(TokenType.Bot, config.Token);
 		await _client.StartAsync();
 
-		var mod = await interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), serviceProvider);
 
-		Console.WriteLine("mods found" + mod.Count());
 
 
 

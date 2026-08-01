@@ -6,6 +6,11 @@ public class User
     public byte[] EncryptedToken { get; set; }
     public byte[] Nonce { get; set; }
     public byte[] Tag { get; set; }
+    
+    public string AccessToken { get; set; }
+    
+    public DateTime TokenExpires { get; set; }
+    
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }
