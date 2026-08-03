@@ -19,29 +19,50 @@ namespace ValoShopTracker.Migrations
 
             modelBuilder.Entity("ValoShopTracker.DB.User", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("AccessToken")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
+
+                    b.Property<ulong>("DiscordUserId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<byte[]>("EncryptedToken")
                         .IsRequired()
                         .HasColumnType("BLOB");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
                     b.Property<byte[]>("Nonce")
                         .IsRequired()
                         .HasColumnType("BLOB");
+
+                    b.Property<string>("Puuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Shard")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<byte[]>("Tag")
                         .IsRequired()
                         .HasColumnType("BLOB");
 
+                    b.Property<DateTime>("TokenExpires")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
                     b.ToTable("Users");
                 });
