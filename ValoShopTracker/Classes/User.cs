@@ -10,6 +10,8 @@ public class User
     public byte[] Tag { get; set; }
     public string Shard { get; set; }
     public string? Name { get; set; }
+
+    public bool Selected { get; set; } = false;
     
     public string AccessToken { get; set; }
     

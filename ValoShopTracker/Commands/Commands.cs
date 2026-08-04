@@ -125,7 +125,8 @@ public class Commands : InteractionModuleBase<SocketInteractionContext>
                 Tag = encryptedToken.Item3,
                 Shard = pInfo.Affinity.Region,
                 AccessToken = tokens.AccessToken,
-                TokenExpires = DateTime.UtcNow.AddSeconds(tokens.ExpiresIn)
+                TokenExpires = DateTime.UtcNow.AddSeconds(tokens.ExpiresIn),
+                Selected =  true
             };
         
             await  _db.Users.AddAsync(user);

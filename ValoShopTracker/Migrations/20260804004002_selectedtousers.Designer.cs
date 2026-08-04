@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ValoShopTracker.DB;
 
@@ -10,9 +11,11 @@ using ValoShopTracker.DB;
 namespace ValoShopTracker.Migrations
 {
     [DbContext(typeof(DbConstructor))]
-    partial class DbConstructorModelSnapshot : ModelSnapshot
+    [Migration("20260804004002_selectedtousers")]
+    partial class selectedtousers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
