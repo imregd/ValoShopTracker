@@ -51,6 +51,22 @@ public class Shop
             return string.Empty;
         }
     }
+
+    public static async Task<WeaponInfoResponse> WeaponInfo(string id)
+    {
+        var client = new RestClient($"https://valorant-api.com/v1/weapons/skinlevels/{id}");
+        var request = new RestRequest("", Method.Get);
+        var response = await client.ExecuteAsync(request);
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            var data = JsonSerializer.Deserialize<WeaponInfoResponse>(response.Content);
+
+            return data;
+
+        }
+
+        return new WeaponInfoResponse();
+    }
     
     
     

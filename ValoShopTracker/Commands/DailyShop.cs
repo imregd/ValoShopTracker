@@ -80,8 +80,38 @@ public class DailyShop : InteractionModuleBase<SocketInteractionContext>
         
         var shop = await Shop.GetStorefront(account.Shard, account.Puuid, entitlement, account.AccessToken);
 
+        var items = new List<string>();
+        var items2 = new List<Embed>();
+
+        for(var i = 0; i < shop.SkinsPanelLayout.SingleItemOffers.Count; i++)
+        {
+            var info = await Shop.WeaponInfo(shop.SkinsPanelLayout.SingleItemOffers[i]);
+
+            var cost = 0;
+            try
+            {
+                cost = shop.SkinsPanelLayout.SingleItemStoreOffers[i].Cost.ElementAt(0).Value;
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            
+            var full = $"{info.data.displayName} - {cost}VP";
+            var embed = new EmbedBuilder();
+
+            embed.WithTitle(full).WithImageUrl(info.data.displayIcon);
+            items2.Add(embed.Build());
+        }
         
         Console.WriteLine("we got da shop baby");
-        await FollowupAsync($"did it work or NAH. ITEM 1 {shop.SkinsPanelLayout.SingleItemOffers[0]} - ITEM 2 {shop.SkinsPanelLayout.SingleItemOffers[1]} ITEM 3 - {shop.SkinsPanelLayout.SingleItemOffers[2]} - ITEM 4-{shop.SkinsPanelLayout.SingleItemOffers[3]}");
+        var hours = shop.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds / 60 / 60;
+
+        var min = (shop.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds / 60 ) % 60;
+        
+        var seconds = shop.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds % 60;
+        
+        await FollowupAsync($"Shop rotates in {hours} hours, {min} minutes and {seconds} second/s", items2.ToArray());
     }
 }

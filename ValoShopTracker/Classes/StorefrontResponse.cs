@@ -11,5 +11,13 @@ public class StorefrontResponse
 public class SkinsPanelLayout
 {
     public List<string> SingleItemOffers { get; set; }
+    public List<SingleItemStoreOffer> SingleItemStoreOffers { get; set; }  
     public int SingleItemOffersRemainingDurationInSeconds { get; set; }
+}
+
+
+public class SingleItemStoreOffer
+{
+    public Dictionary<string, int> Cost { get; set; }
+
 }
