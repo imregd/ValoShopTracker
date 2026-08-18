@@ -99,7 +99,7 @@ public class DailyShop : InteractionModuleBase<SocketInteractionContext>
             if (entitlement == null)
             {
                 Console.WriteLine($"Entitlement token GET failed");
-                await FollowupAsync($"{Context.User.Mention} error failed getting shop. Try again later.");
+                await FollowupAsync($"{Context.User.Mention} error failed getting shop. If this persists, please try re-logging in as your account cookie may of expired");
             }
 
             var shop = await Shop.GetStorefront(account.Shard, account.Puuid, entitlement, account.AccessToken);

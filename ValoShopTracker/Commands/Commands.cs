@@ -100,6 +100,8 @@ public class Commands : InteractionModuleBase<SocketInteractionContext>
             {
                 await RespondAsync(
                     $"{Context.User.Mention}. Code could not be retrieved from URL, did you paste it in correctly?");
+
+                return;
             }
 
             var userId = Context.User.Id;
@@ -114,11 +116,7 @@ public class Commands : InteractionModuleBase<SocketInteractionContext>
 
 
 
-            if (userInfo != null)
-            {
-                await RespondAsync(
-                    $"{Context.User.Mention}. Account already exists with the name (if added): {userInfo.Name}");
-            }
+
 
 
             var encryptedToken = EncryptionHelper.Encrypt(tokens.RefreshToken);
@@ -136,31 +134,49 @@ public class Commands : InteractionModuleBase<SocketInteractionContext>
                 activeAccount.Selected = false;
             }
 
-            var user = new User
+
+            if (userInfo == null)
             {
-                DiscordUserId = userId,
-                Puuid = pInfo.Puuid,
-                EncryptedToken = encryptedToken.Item1,
-                Nonce = encryptedToken.Item2,
-                Tag = encryptedToken.Item3,
-                Shard = pInfo.Affinity.Region,
-                AccessToken = tokens.AccessToken,
-                TokenExpires = DateTime.UtcNow.AddSeconds(tokens.ExpiresIn),
-                Name = name,
-                Selected = true
-            };
-
-            await _db.Users.AddAsync(user);
 
 
+                var user = new User
+                {
+                    DiscordUserId = userId,
+                    Puuid = pInfo.Puuid,
+                    EncryptedToken = encryptedToken.Item1,
+                    Nonce = encryptedToken.Item2,
+                    Tag = encryptedToken.Item3,
+                    Shard = pInfo.Affinity.Region,
+                    AccessToken = tokens.AccessToken,
+                    TokenExpires = DateTime.UtcNow.AddSeconds(tokens.ExpiresIn),
+                    Name = name,
+                    Selected = true
+                };
+
+                await _db.Users.AddAsync(user);
+                
+                await _db.SaveChangesAsync();
+
+                
+                await RespondAsync(
+                    $"{Context.User.Mention} account successfully logged in, you can call /shop or any other commands now!");
+
+                return;
+            }
+
+            userInfo.EncryptedToken = encryptedToken.Item1;
+            userInfo.Nonce = encryptedToken.Item2;
+            userInfo.Tag = encryptedToken.Item3;
+            userInfo.AccessToken =  tokens.AccessToken;
+            userInfo.TokenExpires = DateTime.UtcNow.AddSeconds(tokens.ExpiresIn);
+            
             await _db.SaveChangesAsync();
 
 
+            await RespondAsync($"{Context.User.Mention} account already exists, token refreshed for account");
 
+            
 
-
-            await RespondAsync(
-                $"{Context.User.Mention} account successfully logged in, you can call /shop or any other commands now!");
 
         }
         catch (Exception e)
@@ -220,9 +236,10 @@ public class Commands : InteractionModuleBase<SocketInteractionContext>
             var accounts = await _db.Users.Where(u => u.DiscordUserId == Context.User.Id).ToListAsync();
 
 
-            if ((Id - 1) > accounts.Count || accounts.Count == 0)
+            if (Id < 1 || Id > accounts.Count)
             {
                 await RespondAsync($"{Context.User.Mention} account not found.");
+                return;
             }
 
             var accToDelete = accounts[Id - 1];
@@ -234,7 +251,7 @@ public class Commands : InteractionModuleBase<SocketInteractionContext>
 
                 if (newSelected != null)
                 {
-                    newSelected.Selected = false;
+                    newSelected.Selected = true;
 
                 }
 
@@ -260,26 +277,27 @@ public class Commands : InteractionModuleBase<SocketInteractionContext>
     {
         try
         {
+            var accounts = await _db.Users.Where(u => u.DiscordUserId == Context.User.Id).ToListAsync();
 
-
-            var account = await _db.Users.Where(u => u.DiscordUserId == Context.User.Id).ToListAsync();
-
-            var wantedAccount = account.FirstOrDefault(a => a.Id == Id);
-            var unselectedAccount = account.FirstOrDefault(a => a.Selected);
-            if (wantedAccount != null)
+            if (Id < 1 || Id > accounts.Count)
             {
-                wantedAccount.Selected = true;
+                await RespondAsync($"{Context.User.Mention} Account not found.");
+                return;
             }
 
-            if (unselectedAccount != null)
+            var wantedAccount = accounts[Id - 1];
+            var unselectedAccount = accounts.FirstOrDefault(a => a.Selected);
+
+            wantedAccount.Selected = true;
+
+            if (unselectedAccount != null && unselectedAccount.Id != wantedAccount.Id)
             {
                 unselectedAccount.Selected = false;
             }
 
             await _db.SaveChangesAsync();
 
-            await RespondAsync($"{Context.User.Mention} Account {Id} is now selected!");
-
+            await RespondAsync($"{Context.User.Mention} Account {wantedAccount.Name} is now selected!");
         }
         catch (Exception e)
         {
