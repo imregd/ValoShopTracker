@@ -23,7 +23,7 @@ public class DailyShop : InteractionModuleBase<SocketInteractionContext>
 
 
 
-    public async Task<User> GetAccount(ulong discordId)
+    public async Task<User?> GetAccount(ulong discordId)
     {
 
         try
@@ -69,7 +69,7 @@ public class DailyShop : InteractionModuleBase<SocketInteractionContext>
             Console.WriteLine($"error getting account: {e.Message}");
         }
 
-        return new User();
+        return null;
 
     }
 
@@ -88,10 +88,12 @@ public class DailyShop : InteractionModuleBase<SocketInteractionContext>
 
             var account = await GetAccount(discId);
 
-            if (account == new User())
+            if (account == null)
             {
                 Console.WriteLine($"FAILED to get user's account.");
                 await FollowupAsync($"{Context.User.Mention} failed getting selected account. Try again later");
+
+                return;
             }
 
             var entitlement = await Auth.GetEntitlement(account.AccessToken);
@@ -100,6 +102,8 @@ public class DailyShop : InteractionModuleBase<SocketInteractionContext>
             {
                 Console.WriteLine($"Entitlement token GET failed");
                 await FollowupAsync($"{Context.User.Mention} error failed getting shop. If this persists, please try re-logging in as your account cookie may of expired");
+
+                return;
             }
 
             var shop = await Shop.GetStorefront(account.Shard, account.Puuid, entitlement, account.AccessToken);
@@ -109,8 +113,7 @@ public class DailyShop : InteractionModuleBase<SocketInteractionContext>
                 throw new Exception($"no items retrieved from daily store request");
             }
 
-
-            var items = new List<string>();
+            
             var items2 = new List<Embed>();
 
             for (var i = 0; i < shop.SkinsPanelLayout.SingleItemOffers.Count; i++)
