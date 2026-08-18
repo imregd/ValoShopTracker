@@ -25,7 +25,14 @@ public class Program
 
 	public static async Task Main()
 	{
+		
+		DotNetEnv.Env.Load();
+
+		
+
 		var config = JsonConvert.DeserializeObject<DiscToken>(File.ReadAllText("appsettings.json"));
+
+
 
 
 		_client = new DiscordSocketClient();
@@ -72,7 +79,7 @@ public class Program
 		_client.Log += Log;
 
 
-		_client.Ready += async () => { await interactionService.RegisterCommandsToGuildAsync(config.GuildId); };
+		_client.Ready += async () => { await interactionService.RegisterCommandsGloballyAsync(); };
 
 		
 		var mod = await interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), serviceProvider);
