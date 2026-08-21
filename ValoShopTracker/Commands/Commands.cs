@@ -164,20 +164,24 @@ public class Commands : InteractionModuleBase<SocketInteractionContext>
                 return;
             }
 
+            
+            
+            
+            
+            
+            
             userInfo.EncryptedToken = encryptedToken.Item1;
             userInfo.Nonce = encryptedToken.Item2;
             userInfo.Tag = encryptedToken.Item3;
             userInfo.AccessToken =  tokens.AccessToken;
             userInfo.TokenExpires = DateTime.UtcNow.AddSeconds(tokens.ExpiresIn);
+            userInfo.Selected = true;
             
             await _db.SaveChangesAsync();
 
 
             await RespondAsync($"{Context.User.Mention} account already exists, token refreshed for account");
-
             
-
-
         }
         catch (Exception e)
         {
